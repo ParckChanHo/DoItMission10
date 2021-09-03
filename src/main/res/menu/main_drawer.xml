@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_0"
+            android:title="로그아웃" />
+        <item
+            android:id="@+id/nav_1"
+            android:title="검진결과조회" />
+        <item
+            android:id="@+id/nav_2"
+            android:title="상담센터안내" />
+    </group>
+
+</menu>
