@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,14 +47,15 @@ public class TestGraph extends AppCompatActivity {
 
     BarEntry barEntry;
     int update_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_graph);
 
         chart = findViewById(R.id.barchart);
-        chart.getAxisRight().setAxisMaxValue(100);
-        chart.getAxisLeft().setAxisMaxValue(100);
+        chart.getAxisRight().setAxisMaxValue(60);
+        chart.getAxisLeft().setAxisMaxValue(60);
         NoOfEmp = new ArrayList<>();//y축
         helper = new BarchartDB(this);
         db = helper.getReadableDatabase();
@@ -64,15 +66,29 @@ public class TestGraph extends AppCompatActivity {
 
         barCharts = new ArrayList<>();
 
+        SimpleDateFormat todayCheck = new SimpleDateFormat("yyyy-MM-dd");
+        String changeToday = todayCheck.format(new Date()); // 오늘 날짜를 yyyy-MM-dd 형식으로 바꾼다.
+        Date today = null;
+        try {
+            today = todayCheck.parse(changeToday);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int count = 1;
         while (cursor.moveToNext()){
             int value = cursor.getInt(0);
             String date = cursor.getString(1);
+            try {
+                Date isToday = todayCheck.parse(date); // 모든 날짜를 Date 형식으로 바꾼다.
+                if(isToday.equals(today)){
+                    barCharts.add(new BarScore(value,date)); // 오늘 날짜 까지 들어갔다!
+                    Toast.makeText(getApplicationContext(),"같은 날짜 입니다.: "+count,Toast.LENGTH_LONG).show();
 
-            if(cursor.moveToLast()){
-                update_id = cursor.getInt(2);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            //Toast.makeText(getApplicationContext(),"value: "+value+"\n"+"date: "+date,Toast.LENGTH_LONG).show();
-            barCharts.add(new BarScore(value,date));
         }
 
         for(int i=0; i<barCharts.size();i++){
@@ -81,7 +97,7 @@ public class TestGraph extends AppCompatActivity {
 
             //yValue.add(value);
             barEntry = new BarEntry((float)value,i);
-            NoOfEmp.add(barEntry);
+            NoOfEmp.add(barEntry); // 세로 값
             //Toast.makeText(getApplicationContext(),"value: "+(float)value,Toast.LENGTH_LONG).show();
         }
 
@@ -110,7 +126,9 @@ public class TestGraph extends AppCompatActivity {
         BarDataSet bardataset = new BarDataSet(NoOfEmp, "진단그래프");
         chart.animateXY(1000,1000);
         chart.setTouchEnabled(false); //확대하지못하게 막아버림! 별로 안좋은 기능인 것 같아~
+
         BarData data = new BarData(year, bardataset);
+
         bardataset.setColors(ColorTemplate.LIBERTY_COLORS);
         chart.setData(data);
         chart.invalidate();
@@ -139,29 +157,14 @@ public class TestGraph extends AppCompatActivity {
         Intent intent = getIntent();
         int score = intent.getIntExtra("value2",0);
 
-        if(var.today){
-            SimpleDateFormat fm1 = new SimpleDateFormat("yyyy-MM-dd");
-            String date = fm1.format(new Date());
-            db=helper.getWritableDatabase();
-            String sql = "insert into chart(value,date) values('"
-                    +score + "', '" +date + "')";
-            db.execSQL(sql);
-            var.today = false;
-            reOncreate();
-        }
-        else{ // 1번 이상 진행했기 때문에 update가 필요함!!!!
+        SimpleDateFormat fm1 = new SimpleDateFormat("yyyy-MM-dd");
+        String date = fm1.format(new Date());
+        db=helper.getWritableDatabase();
+        String sql = "insert into chart(value,date) values('"
+                +score + "', '" +date + "')";
+        db.execSQL(sql);
+        reOncreate();
 
-            SimpleDateFormat fm1 = new SimpleDateFormat("yyyy-MM-dd");
-            String date = fm1.format(new Date()); //2021-07-19 이렇게 나온다!!!
-            db=helper.getWritableDatabase();
-            String sql = "update chart set value='" + score + "'" +
-                    "where _id=" +update_id;
-
-            Toast.makeText(getApplicationContext(),"date: "+date,Toast.LENGTH_LONG).show();
-            db.execSQL(sql);
-            reOncreate();
-        }
-        //"insert into chart(value,date) values(10,'2021-07-08')"
     } // onCreate() 함수의 끝이다.
 
     public void reOncreate(){
