@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -46,8 +47,9 @@ public class TestGraph extends AppCompatActivity {
     ArrayList<BarScore> barCharts;
 
     BarEntry barEntry;
-    int update_id;
-
+    TextView testGraph;
+    ArrayList<Date> dayArrayList;
+    Boolean today=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,59 +61,76 @@ public class TestGraph extends AppCompatActivity {
         NoOfEmp = new ArrayList<>();//y축
         helper = new BarchartDB(this);
         db = helper.getReadableDatabase();
+
+        testGraph = (TextView)findViewById(R.id.testGraph);
+        testGraph.setText("");
+        SimpleDateFormat strToDate = new SimpleDateFormat("yyyy-MM-dd");
+        for(int i=6; i>=1; i--){
+            try {
+                String tempDate = MinusDate(i);
+                Date date = strToDate.parse(tempDate);
+                //testGraph.append("날짜: "+tempDate+"\n");
+                dayArrayList.add(date); // -6일 부터 -1일까지의 모든 날짜가 String 형식으로 저장이 되어있다.
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         // db 테이블에서 레코드 읽기
         cursor = db.rawQuery("select value,date,_id from chart where date between date('now', 'start of day','-6 days')" +
                 "and date('now', 'start of day')",null);
-        //cursor = db.rawQuery("select type, title, amount, strftime('%Y-%m-%d', updated) from accountBook;", null);
-
         barCharts = new ArrayList<>();
 
-        SimpleDateFormat todayCheck = new SimpleDateFormat("yyyy-MM-dd");
-        String changeToday = todayCheck.format(new Date()); // 오늘 날짜를 yyyy-MM-dd 형식으로 바꾼다.
-        Date today = null;
-        try {
-            today = todayCheck.parse(changeToday);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
-        int count = 1;
+        int count=0;
         while (cursor.moveToNext()){
             int value = cursor.getInt(0);
             String date = cursor.getString(1);
             try {
-                Date isToday = todayCheck.parse(date); // 모든 날짜를 Date 형식으로 바꾼다.
-                if(isToday.equals(today)){
-                    barCharts.add(new BarScore(value,date)); // 오늘 날짜 까지 들어갔다!
-                    Toast.makeText(getApplicationContext(),"같은 날짜 입니다.: "+count,Toast.LENGTH_LONG).show();
-
+                Date date1 = strToDate.parse(date); // DB에 저장되어있는 날짜.
+                Date date2 = dayArrayList.get(count);//-6일 부터 -1일까지의 모든 날짜가 Date 형식
+                if(count==0 && date1.equals(date2)){
+                    barEntry = new BarEntry((float)value,count);
+                    NoOfEmp.add(barEntry); // 세로 값
                 }
+                else if(count==1 && date1.equals(date2)){
+                    barEntry = new BarEntry((float)value,count);
+                    NoOfEmp.add(barEntry); // 세로 값
+                }
+                else if(count==2 && date1.equals(date2)){
+                    barEntry = new BarEntry((float)value,count);
+                    NoOfEmp.add(barEntry); // 세로 값
+                }
+                else if(count==3 && date1.equals(date2)){
+                    barEntry = new BarEntry((float)value,count);
+                    NoOfEmp.add(barEntry); // 세로 값
+                }
+                else if(count==4 && date1.equals(date2)){
+                    barEntry = new BarEntry((float)value,count);
+                    NoOfEmp.add(barEntry); // 세로 값
+                }
+                else if(count==5 && date1.equals(date2)){
+                    barEntry = new BarEntry((float)value,count);
+                    NoOfEmp.add(barEntry); // 세로 값
+                }
+                else if(count==6 && date1.equals(date2)){
+                    barEntry = new BarEntry((float)value,count);
+                    NoOfEmp.add(barEntry); // 세로 값
+                    today=true;
+                }
+                count++;
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
 
-        for(int i=0; i<barCharts.size();i++){
-            BarScore barScore = barCharts.get(i);
-            int value = barScore.getValue();
-
-            //yValue.add(value);
-            barEntry = new BarEntry((float)value,i);
-            NoOfEmp.add(barEntry); // 세로 값
-            //Toast.makeText(getApplicationContext(),"value: "+(float)value,Toast.LENGTH_LONG).show();
-        }
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         //depenses.setAxisDependency(YAxis.AxisDependency.LEFT);
         chart.setDescription("오늘");
         year = new ArrayList(); //x축
-
-        /*for(int i=6; i>=0;i--){
-            int day = Integer.parseInt("-"+i);
-            String myDate = getCalculatedDate("MM/dd", day);
-            year.add(myDate);
-        }*/
 
         year.add(getCalculatedDate("MM/dd", -6));
         year.add(getCalculatedDate("MM/dd", -5));
@@ -160,11 +179,19 @@ public class TestGraph extends AppCompatActivity {
         SimpleDateFormat fm1 = new SimpleDateFormat("yyyy-MM-dd");
         String date = fm1.format(new Date());
         db=helper.getWritableDatabase();
-        String sql = "insert into chart(value,date) values('"
-                +score + "', '" +date + "')";
-        db.execSQL(sql);
-        reOncreate();
 
+        if(today){ // 1번 이상 진행했기 때문에 update가 필요함!!!!
+           Toast.makeText(getApplicationContext(),"1번이상 진행을 하셨습니다.",Toast.LENGTH_LONG).show();
+        }
+
+        else{
+            String sql = "insert into chart(value,date) values('"
+                    +score + "', '" +date + "')";
+            db.execSQL(sql);
+            barEntry = new BarEntry((float)score,6);
+            NoOfEmp.add(barEntry); // 세로 값
+            reOncreate();
+        }
     } // onCreate() 함수의 끝이다.
 
     public void reOncreate(){
@@ -203,12 +230,6 @@ public class TestGraph extends AppCompatActivity {
         chart.setDescription("오늘");
         year = new ArrayList(); //x축
 
-        /*for(int i=6; i>=0;i--){
-            int day = Integer.parseInt("-"+i);
-            String myDate = getCalculatedDate("MM/dd", day);
-            year.add(myDate);
-        }*/
-
         year.add(getCalculatedDate("MM/dd", -6));
         year.add(getCalculatedDate("MM/dd", -5));
         year.add(getCalculatedDate("MM/dd", -4));
@@ -226,6 +247,19 @@ public class TestGraph extends AppCompatActivity {
         bardataset.setColors(ColorTemplate.LIBERTY_COLORS);
         chart.setData(data);
         chart.invalidate();
+    }
+
+    public static String MinusDate(int day) throws Exception
+    {
+        SimpleDateFormat dtFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String changeToday = dtFormat.format(new Date()); // 오늘 날짜를 yyyy-MM-dd 형식으로 바꾼다.
+
+        Calendar cal = Calendar.getInstance();
+        Date dt = dtFormat.parse(changeToday);
+        cal.setTime(dt);
+
+        cal.add(Calendar.DATE, -day);
+        return dtFormat.format(cal.getTime());
     }
 
 

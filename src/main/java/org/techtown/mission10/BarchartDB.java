@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 public class BarchartDB extends SQLiteOpenHelper {
     // DB의 버전으로 1부터 시작하고 스키마가 변경될 때 숫자를 올린다
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     // DB 파일명
     private static final String DB_NAME = "Chart.db";
 
@@ -32,19 +32,19 @@ public class BarchartDB extends SQLiteOpenHelper {
         db.execSQL(sql);
         // 2021-07-13
 
-        db.execSQL("insert into chart(value,date) values(10,'2021-07-08')");  // yyyy-MM-dd
-        db.execSQL("insert into chart(value,date) values(20,'2021-07-09')");
-        db.execSQL("insert into chart(value,date) values(30,'2021-07-10')");
-        db.execSQL("insert into chart(value,date) values(40,'2021-07-11')");
-        db.execSQL("insert into chart(value,date) values(10,'2021-07-12')");
-        db.execSQL("insert into chart(value,date) values(10,'2021-07-13')");
+        db.execSQL("insert into chart(value,date) values(10,'2021-08-28')");  // yyyy-MM-dd
+        db.execSQL("insert into chart(value,date) values(20,'2021-08-29')");
+        db.execSQL("insert into chart(value,date) values(30,'2021-08-30')");
+        db.execSQL("insert into chart(value,date) values(40,'2021-08-31')");
+        db.execSQL("insert into chart(value,date) values(10,'2021-09-01')");
+        /*db.execSQL("insert into chart(value,date) values(10,'2021-07-13')");
         db.execSQL("insert into chart(value,date) values(20,'2021-07-14')");
         db.execSQL("insert into chart(value,date) values(30,'2021-07-15')");
         db.execSQL("insert into chart(value,date) values(40,'2021-07-16')");
         db.execSQL("insert into chart(value,date) values(50,'2021-07-17')");
         db.execSQL("insert into chart(value,date) values(60,'2021-07-18')");
         //db.execSQL("insert into chart(value,date) values(70,'2021-07-19')");
-        db.execSQL("insert into chart(value,date) values(80,'2021-07-20')");
+        db.execSQL("insert into chart(value,date) values(80,'2021-07-20')");*/
     }
 
     @Override

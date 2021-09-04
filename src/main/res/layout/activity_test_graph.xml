@@ -46,61 +46,72 @@
                 android:layout_marginRight="10dp"
                 app:srcCompat="@drawable/ic_home" />
         </androidx.appcompat.widget.Toolbar>
-    </RelativeLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="55dp">
-
-        <LinearLayout
-            android:id="@+id/linearLayout4"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="45dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="55dp">
 
-            <Button
-                android:id="@+id/btn_test_graph"
-                android:layout_width="130dp"
-                android:layout_height="60dp"
-                android:textSize="18dp"
-                android:background="@drawable/button_radius"
-                android:text="진단 그래프"/>
-
-            <Button
-                android:id="@+id/btn_test_feeling"
-                android:layout_width="130dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="30dp"
-                android:textSize="18dp"
-                android:background="@drawable/button_radius"
-                android:text="기분 그래프"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout5"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_marginTop="60dp"
-            android:background="#A6FFF2"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barchart"
+            <LinearLayout
+                android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="45dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </LinearLayout>
+                <Button
+                    android:id="@+id/btn_test_graph"
+                    android:layout_width="130dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/button_radius"
+                    android:text="진단 그래프"
+                    android:textSize="18dp" />
+
+                <Button
+                    android:id="@+id/btn_test_feeling"
+                    android:layout_width="130dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="30dp"
+                    android:background="@drawable/button_radius"
+                    android:text="기분 그래프"
+                    android:textSize="18dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout5"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="60dp"
+                android:background="#A6FFF2"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barchart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/testGraph"
+                android:layout_width="177dp"
+                android:layout_height="110dp"
+                android:layout_marginTop="44dp"
+                android:text="TextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
