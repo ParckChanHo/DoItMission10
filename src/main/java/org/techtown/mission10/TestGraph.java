@@ -34,6 +34,7 @@ import java.util.HashMap;
 
 public class TestGraph extends AppCompatActivity {
     //진단 그래프 화면이다.
+    // 3번째 수정하기
     ImageView img_home;
     Button test_graph,test_feeling; // 진단 그래프, 기분 그래프
 
