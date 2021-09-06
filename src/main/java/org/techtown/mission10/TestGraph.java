@@ -1,6 +1,7 @@
 package org.techtown.mission10;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -8,6 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 public class TestGraph extends AppCompatActivity {
     //진단 그래프 화면이다.
@@ -48,8 +51,13 @@ public class TestGraph extends AppCompatActivity {
 
     BarEntry barEntry;
     TextView testGraph;
-    ArrayList<Date> dayArrayList;
+    ArrayList<String> dayArrayList;
     Boolean today=false;
+
+    HashMap<String,Integer> day1; // 날짜
+    HashMap<String,Integer> day2; // DB에 실제로 저장된 것들이다.
+    ArrayList<Integer> dbScore; // DB에 저장됭어 있는 값들
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,13 +72,17 @@ public class TestGraph extends AppCompatActivity {
 
         testGraph = (TextView)findViewById(R.id.testGraph);
         testGraph.setText("");
+        dayArrayList = new ArrayList<>();
+        int count=0; // HashMap<String,Integer>에 값 저장하기
+        day1 = new HashMap<>();
         SimpleDateFormat strToDate = new SimpleDateFormat("yyyy-MM-dd");
-        for(int i=6; i>=1; i--){
+        for(int i=6; i>=0; i--){
             try {
                 String tempDate = MinusDate(i);
-                Date date = strToDate.parse(tempDate);
+                day1.put(tempDate,count);
+                count++;
                 //testGraph.append("날짜: "+tempDate+"\n");
-                dayArrayList.add(date); // -6일 부터 -1일까지의 모든 날짜가 String 형식으로 저장이 되어있다.
+                dayArrayList.add(tempDate); // -6일 부터 -1일까지의 모든 날짜가 String 형식으로 저장이 되어있다.
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -81,49 +93,34 @@ public class TestGraph extends AppCompatActivity {
                 "and date('now', 'start of day')",null);
         barCharts = new ArrayList<>();
 
-
-        int count=0;
+        int count2=0;
+        dbScore = new ArrayList<>();
+        day2 = new HashMap<>();
         while (cursor.moveToNext()){
             int value = cursor.getInt(0);
+            dbScore.add(value);
             String date = cursor.getString(1);
-            try {
-                Date date1 = strToDate.parse(date); // DB에 저장되어있는 날짜.
-                Date date2 = dayArrayList.get(count);//-6일 부터 -1일까지의 모든 날짜가 Date 형식
-                if(count==0 && date1.equals(date2)){
-                    barEntry = new BarEntry((float)value,count);
-                    NoOfEmp.add(barEntry); // 세로 값
-                }
-                else if(count==1 && date1.equals(date2)){
-                    barEntry = new BarEntry((float)value,count);
-                    NoOfEmp.add(barEntry); // 세로 값
-                }
-                else if(count==2 && date1.equals(date2)){
-                    barEntry = new BarEntry((float)value,count);
-                    NoOfEmp.add(barEntry); // 세로 값
-                }
-                else if(count==3 && date1.equals(date2)){
-                    barEntry = new BarEntry((float)value,count);
-                    NoOfEmp.add(barEntry); // 세로 값
-                }
-                else if(count==4 && date1.equals(date2)){
-                    barEntry = new BarEntry((float)value,count);
-                    NoOfEmp.add(barEntry); // 세로 값
-                }
-                else if(count==5 && date1.equals(date2)){
-                    barEntry = new BarEntry((float)value,count);
-                    NoOfEmp.add(barEntry); // 세로 값
-                }
-                else if(count==6 && date1.equals(date2)){
-                    barEntry = new BarEntry((float)value,count);
-                    NoOfEmp.add(barEntry); // 세로 값
-                    today=true;
-                }
-                count++;
+            day2.put(date,count2);
+            count2++;
+            //testGraph.append("value: "+value+" 날짜: "+date+"\n");
+        }
 
-            } catch (ParseException e) {
-                e.printStackTrace();
+        for(int i=0; i<dayArrayList.size();i++){ // 7번 돈다.
+            String day = dayArrayList.get(i);
+
+            if(day2.get(day) !=null){
+                if(!(day1.get(day) == day2.get(day))){
+                    int value = day1.get(day);
+                    day2.replace(day,value);
+                }
             }
         }
+
+      /*  for(int i=0; i<day2.size(); i++){
+            int value = dbScore.get(i);
+            int index =
+            barEntry = new BarEntry((float)value,)
+        }*/
 
 
         XAxis xAxis = chart.getXAxis();
