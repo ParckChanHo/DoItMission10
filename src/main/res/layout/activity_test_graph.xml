@@ -101,8 +101,8 @@
 
             <TextView
                 android:id="@+id/testGraph"
-                android:layout_width="177dp"
-                android:layout_height="110dp"
+                android:layout_width="match_parent"
+                android:layout_height="155dp"
                 android:layout_marginTop="44dp"
                 android:text="TextView"
                 app:layout_constraintEnd_toEndOf="parent"

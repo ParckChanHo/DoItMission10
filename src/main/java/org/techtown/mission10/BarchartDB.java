@@ -32,13 +32,14 @@ public class BarchartDB extends SQLiteOpenHelper {
         db.execSQL(sql);
         // 2021-07-13
 
-        db.execSQL("insert into chart(value,date) values(10,'2021-08-28')");  // yyyy-MM-dd
+       /* db.execSQL("insert into chart(value,date) values(10,'2021-08-28')");  // yyyy-MM-dd
         db.execSQL("insert into chart(value,date) values(20,'2021-08-29')");
-        //db.execSQL("insert into chart(value,date) values(30,'2021-08-30')");
-        db.execSQL("insert into chart(value,date) values(40,'2021-08-31')");
-        db.execSQL("insert into chart(value,date) values(50,'2021-09-01')");
-        db.execSQL("insert into chart(value,date) values(60,'2021-09-02')");
-        db.execSQL("insert into chart(value,date) values(60,'2021-09-03')");
+        db.execSQL("insert into chart(value,date) values(30,'2021-08-30')");*/
+        db.execSQL("insert into chart(value,date) values(10,'2021-09-01')");
+        db.execSQL("insert into chart(value,date) values(10,'2021-09-02')");
+        db.execSQL("insert into chart(value,date) values(20,'2021-09-03')");
+        db.execSQL("insert into chart(value,date) values(30,'2021-09-04')");
+        db.execSQL("insert into chart(value,date) values(50,'2021-09-06')");
         /*db.execSQL("insert into chart(value,date) values(10,'2021-07-13')");
         db.execSQL("insert into chart(value,date) values(20,'2021-07-14')");
         db.execSQL("insert into chart(value,date) values(30,'2021-07-15')");

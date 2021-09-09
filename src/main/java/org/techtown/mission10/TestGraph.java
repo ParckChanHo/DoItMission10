@@ -25,12 +25,16 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class TestGraph extends AppCompatActivity {
     //진단 그래프 화면이다.
@@ -55,8 +59,8 @@ public class TestGraph extends AppCompatActivity {
     ArrayList<String> dayArrayList;
     Boolean today=false;
 
-    HashMap<String,Integer> day1; // 날짜
-    HashMap<String,Integer> day2; // DB에 실제로 저장된 것들이다.
+    Map<String, Integer> day1; // 날짜
+    Map<String, Integer> day2; // DB에 실제로 저장된 것들이다.
     ArrayList<Integer> dbScore; // DB에 저장됭어 있는 값들
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -74,20 +78,23 @@ public class TestGraph extends AppCompatActivity {
         testGraph = (TextView)findViewById(R.id.testGraph);
         testGraph.setText("");
         dayArrayList = new ArrayList<>();
-        int count=0; // HashMap<String,Integer>에 값 저장하기
+        //int count=0;  HashMap<String,Integer>에 값 저장하기
         day1 = new HashMap<>();
-        SimpleDateFormat strToDate = new SimpleDateFormat("yyyy-MM-dd");
+
         for(int i=6; i>=0; i--){
             try {
-                String tempDate = MinusDate(i);
-                day1.put(tempDate,count);
-                count++;
-                //testGraph.append("날짜: "+tempDate+"\n");
-                dayArrayList.add(tempDate); // -6일 부터 -1일까지의 모든 날짜가 String 형식으로 저장이 되어있다.
+                dayArrayList.add(MinusDate(i)); // 8-31 9-1 9-2 9-3 9-4 9-5 9-6
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        for(int i=0;i<=6;i++){
+            String tempDate = dayArrayList.get(i);
+            day1.put(tempDate,i); // 값에 0~6까지의 값이 들어간다.
+            System.out.println("tempDate: "+tempDate);
+        }
+
+        testGraph.append("\n");
 
         // db 테이블에서 레코드 읽기
         cursor = db.rawQuery("select value,date,_id from chart where date between date('now', 'start of day','-6 days')" +
@@ -99,29 +106,49 @@ public class TestGraph extends AppCompatActivity {
         day2 = new HashMap<>();
         while (cursor.moveToNext()){
             int value = cursor.getInt(0);
-            dbScore.add(value);
+            dbScore.add(value); // 10 20 30 40 50
             String date = cursor.getString(1);
-            day2.put(date,count2);
+            day2.put(date,count2); // 0 1 2 3 4
+            testGraph.append("count2: "+count2+"  ");
             count2++;
-            //testGraph.append("value: "+value+" 날짜: "+date+"\n");
         }
 
-        for(int i=0; i<dayArrayList.size();i++){ // 7번 돈다.
-            String day = dayArrayList.get(i);
 
-            if(day2.get(day) !=null){
-                if(!(day1.get(day) == day2.get(day))){
+        for(int i=0; i<dayArrayList.size();i++){ // 7번 돈다.
+            String day = dayArrayList.get(i); //8-31 9-1 9-2 9-3 9-4 9-5 9-6
+            System.out.println("day: "+day);
+
+            if(day2.get(day) !=null){        //8-31 9-1 9-2 9-3 9-4 9-5 9-6
+                int intDay1 = day1.get(day); // 0    1   2   3   4   5   6
+                int intDay2 = day2.get(day); // 0    1   2   3       4
+                System.out.println("day1: "+intDay1+" "+"day2: "+intDay2);
+
+                //Toast.makeText(getApplicationContext(),"day1 : "+intDay1 +"day2: "+intDay2+"\n",Toast.LENGTH_LONG).show();
+                if(!(intDay1 == intDay2)){ // 9-5
                     int value = day1.get(day);
+                    System.out.println("value: "+value);
+                    //Toast.makeText(getApplicationContext(),"value : "+value,Toast.LENGTH_LONG).show();
                     day2.replace(day,value);
                 }
             }
         }
 
-      /*  for(int i=0; i<day2.size(); i++){
-            int value = dbScore.get(i);
-            int index =
-            barEntry = new BarEntry((float)value,)
-        }*/
+        Collection<Integer> day2Index = day2.values();
+        ArrayList<Integer> finalIndex = new ArrayList<>();
+        for (Integer value : day2Index) {
+            finalIndex.add(value);
+            System.out.println("day2Index: "+value);
+        }
+
+        for(int i=0; i<day2.size();i++){ //5번 0~4까지
+            int value = dbScore.get(i); // db에 저장되어 있는 값들.
+            int realIndex = finalIndex.get(i); // 0 1 2 3 5
+
+            barEntry = new BarEntry((float)value,realIndex);
+            NoOfEmp.add(barEntry); // 세로 값
+
+            System.out.println("결과값(value): "+value+"  "+"결과값(realIndex): "+realIndex);
+        }
 
 
         XAxis xAxis = chart.getXAxis();
@@ -175,10 +202,10 @@ public class TestGraph extends AppCompatActivity {
         int score = intent.getIntExtra("value2",0);
 
         SimpleDateFormat fm1 = new SimpleDateFormat("yyyy-MM-dd");
-        String date = fm1.format(new Date());
+       /* String date = fm1.format(new Date());*/
         db=helper.getWritableDatabase();
 
-        if(today){ // 1번 이상 진행했기 때문에 update가 필요함!!!!
+        /*if(today){ // 1번 이상 진행했기 때문에 update가 필요함!!!!
            Toast.makeText(getApplicationContext(),"1번이상 진행을 하셨습니다.",Toast.LENGTH_LONG).show();
         }
 
@@ -189,7 +216,7 @@ public class TestGraph extends AppCompatActivity {
             barEntry = new BarEntry((float)score,6);
             NoOfEmp.add(barEntry); // 세로 값
             reOncreate();
-        }
+        }*/
     } // onCreate() 함수의 끝이다.
 
     public void reOncreate(){
