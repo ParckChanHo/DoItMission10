@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TestGraph extends AppCompatActivity {
@@ -59,9 +60,12 @@ public class TestGraph extends AppCompatActivity {
     ArrayList<String> dayArrayList;
     Boolean today=false;
 
-    Map<String, Integer> day1; // 날짜
-    Map<String, Integer> day2; // DB에 실제로 저장된 것들이다.
+    LinkedHashMap<String, Integer> day1; // 날짜 ====> LinkedHashMap: 입력했던 순서대로 Entry가 LinkedHashMap에 mapping 됩니다.
+    LinkedHashMap<String, Integer> day2; // DB에 실제로 저장된 것들이다.
     ArrayList<Integer> dbScore; // DB에 저장됭어 있는 값들
+
+    int intDay1;
+    int intDay2;
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +83,7 @@ public class TestGraph extends AppCompatActivity {
         testGraph.setText("");
         dayArrayList = new ArrayList<>();
         //int count=0;  HashMap<String,Integer>에 값 저장하기
-        day1 = new HashMap<>();
+        day1 = new LinkedHashMap<>();
 
         for(int i=6; i>=0; i--){
             try {
@@ -91,7 +95,7 @@ public class TestGraph extends AppCompatActivity {
         for(int i=0;i<=6;i++){
             String tempDate = dayArrayList.get(i);
             day1.put(tempDate,i); // 값에 0~6까지의 값이 들어간다.
-            System.out.println("tempDate: "+tempDate);
+            //System.out.println("tempDate: "+tempDate);
         }
 
         testGraph.append("\n");
@@ -103,31 +107,47 @@ public class TestGraph extends AppCompatActivity {
 
         int count2=0;
         dbScore = new ArrayList<>();
-        day2 = new HashMap<>();
+        day2 = new LinkedHashMap<>();
         while (cursor.moveToNext()){
             int value = cursor.getInt(0);
             dbScore.add(value); // 10 20 30 40 50
             String date = cursor.getString(1);
             day2.put(date,count2); // 0 1 2 3 4
-            testGraph.append("count2: "+count2+"  ");
+
+           /* System.out.println("day2(value): "+value+"  "+"day2(date): "+date);
+            System.out.println("count2: "+count2);*/
             count2++;
+            testGraph.append("count2: "+count2+"  ");
         }
 
+        Collection<Integer> beforeDay2 = day2.values();
+        for (Integer value : beforeDay2) {
+            System.out.println("beforeIndex: "+value);
+        }
 
         for(int i=0; i<dayArrayList.size();i++){ // 7번 돈다.
-            String day = dayArrayList.get(i); //8-31 9-1 9-2 9-3 9-4 9-5 9-6
+            String day = dayArrayList.get(i); // 2021-09-05
             System.out.println("day: "+day);
 
-            if(day2.get(day) !=null){        //8-31 9-1 9-2 9-3 9-4 9-5 9-6
-                int intDay1 = day1.get(day); // 0    1   2   3   4   5   6
-                int intDay2 = day2.get(day); // 0    1   2   3       4
-                System.out.println("day1: "+intDay1+" "+"day2: "+intDay2);
+            if(i==day2.size())
+                break;
 
-                //Toast.makeText(getApplicationContext(),"day1 : "+intDay1 +"day2: "+intDay2+"\n",Toast.LENGTH_LONG).show();
+            if(day2.get(day) == null) { // day2.get(2021-09-05) ==> null이다.
+                String tempDay = dayArrayList.get(i + 1); // 2021-09-06을 반환해준다.
+                intDay1 = day1.get(tempDay); // 3을 반환해준다.
+                intDay2 = day2.get(tempDay); // 2을 반환해준다.
+
+                if(!(intDay1 == intDay2)){ // 2021-09-06
+                    System.out.println("day2의 수정된 value값: "+intDay1);
+                    day2.replace(tempDay,intDay1);
+                }
+            }
+
+            else{ // day2.get(day)가 null이 아니면
                 if(!(intDay1 == intDay2)){ // 9-5
                     int value = day1.get(day);
                     System.out.println("value: "+value);
-                    //Toast.makeText(getApplicationContext(),"value : "+value,Toast.LENGTH_LONG).show();
+
                     day2.replace(day,value);
                 }
             }
