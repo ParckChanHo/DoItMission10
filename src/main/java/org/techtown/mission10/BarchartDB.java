@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 public class BarchartDB extends SQLiteOpenHelper {
     // DB의 버전으로 1부터 시작하고 스키마가 변경될 때 숫자를 올린다
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 3;
     // DB 파일명
     private static final String DB_NAME = "Chart.db";
 
@@ -38,9 +38,11 @@ public class BarchartDB extends SQLiteOpenHelper {
         db.execSQL("insert into chart(value,date) values(10,'2021-09-01')");
         db.execSQL("insert into chart(value,date) values(10,'2021-09-02')");
         db.execSQL("insert into chart(value,date) values(20,'2021-09-03')");
-        db.execSQL("insert into chart(value,date) values(30,'2021-09-04')");
-        db.execSQL("insert into chart(value,date) values(40,'2021-09-06')");
-        db.execSQL("insert into chart(value,date) values(50,'2021-09-08')");
+        db.execSQL("insert into chart(value,date) values(10,'2021-09-04')");
+        db.execSQL("insert into chart(value,date) values(20,'2021-09-05')");
+        db.execSQL("insert into chart(value,date) values(30,'2021-09-06')");
+        db.execSQL("insert into chart(value,date) values(40,'2021-09-07')");
+        db.execSQL("insert into chart(value,date) values(50,'2021-09-09')");
         /*db.execSQL("insert into chart(value,date) values(10,'2021-07-13')");
         db.execSQL("insert into chart(value,date) values(20,'2021-07-14')");
         db.execSQL("insert into chart(value,date) values(30,'2021-07-15')");

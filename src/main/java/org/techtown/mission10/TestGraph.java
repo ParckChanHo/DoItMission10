@@ -58,14 +58,12 @@ public class TestGraph extends AppCompatActivity {
     BarEntry barEntry;
     TextView testGraph;
     ArrayList<String> dayArrayList;
-    Boolean today=false;
 
     LinkedHashMap<String, Integer> day1; // 날짜 ====> LinkedHashMap: 입력했던 순서대로 Entry가 LinkedHashMap에 mapping 됩니다.
     LinkedHashMap<String, Integer> day2; // DB에 실제로 저장된 것들이다.
-    ArrayList<Integer> dbScore; // DB에 저장됭어 있는 값들
+    ArrayList<String> dbDate; // DB에 저장되어 있는 날짜들
 
-    int intDay1;
-    int intDay2;
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,64 +103,23 @@ public class TestGraph extends AppCompatActivity {
                 "and date('now', 'start of day')",null);
         barCharts = new ArrayList<>();
 
-        int count2=0;
-        dbScore = new ArrayList<>();
         day2 = new LinkedHashMap<>();
+        dbDate = new ArrayList<>();
         while (cursor.moveToNext()){
             int value = cursor.getInt(0);
-            dbScore.add(value); // 10 20 30 40 50
             String date = cursor.getString(1);
-            day2.put(date,count2); // 0 1 2 3 4
+            dbDate.add(date);
 
-           /* System.out.println("day2(value): "+value+"  "+"day2(date): "+date);
-            System.out.println("count2: "+count2);*/
-            count2++;
-            testGraph.append("count2: "+count2+"  ");
-        }
-
-        Collection<Integer> beforeDay2 = day2.values();
-        for (Integer value : beforeDay2) {
-            System.out.println("beforeIndex: "+value);
-        }
-
-        for(int i=0; i<dayArrayList.size();i++){ // 7번 돈다.
-            String day = dayArrayList.get(i); // 2021-09-05
-            System.out.println("day: "+day);
-
-            if(i==day2.size())
-                break;
-
-            if(day2.get(day) == null) { // day2.get(2021-09-05) ==> null이다.
-                String tempDay = dayArrayList.get(i + 1); // 2021-09-06을 반환해준다.
-                intDay1 = day1.get(tempDay); // 3을 반환해준다.
-                intDay2 = day2.get(tempDay); // 2을 반환해준다.
-
-                if(!(intDay1 == intDay2)){ // 2021-09-06
-                    System.out.println("day2의 수정된 value값: "+intDay1);
-                    day2.replace(tempDay,intDay1);
-                }
+            if(!day1.containsKey(date)){
+                day1.remove(date);
             }
-
-            else{ // day2.get(day)가 null이 아니면
-                if(!(intDay1 == intDay2)){ // 9-5
-                    int value = day1.get(day);
-                    System.out.println("value: "+value);
-
-                    day2.replace(day,value);
-                }
-            }
-        }
-
-        Collection<Integer> day2Index = day2.values();
-        ArrayList<Integer> finalIndex = new ArrayList<>();
-        for (Integer value : day2Index) {
-            finalIndex.add(value);
-            System.out.println("day2Index: "+value);
+            day2.put(date,value);
         }
 
         for(int i=0; i<day2.size();i++){ //5번 0~4까지
-            int value = dbScore.get(i); // db에 저장되어 있는 값들.
-            int realIndex = finalIndex.get(i); // 0 1 2 3 5
+            String finishDate = dbDate.get(i);
+            int realIndex = day1.get(finishDate); // 0 1 3
+            int value = day2.get(finishDate); // 20 30 50
 
             barEntry = new BarEntry((float)value,realIndex);
             NoOfEmp.add(barEntry); // 세로 값
