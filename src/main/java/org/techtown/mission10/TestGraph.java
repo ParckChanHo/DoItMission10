@@ -215,6 +215,7 @@ public class TestGraph extends AppCompatActivity {
                 contentValues.put("value",score);
                 db.update("chart",contentValues,"date = ?",new String[]{ checkToday });
 
+                reOncreate();
                 /*String sql = "update chart set value='" + score + "'"
                 +"where date= "+checkToday;
                 db.execSQL(sql);
