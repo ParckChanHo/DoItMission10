@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 public class BarchartDB extends SQLiteOpenHelper {
     // DB의 버전으로 1부터 시작하고 스키마가 변경될 때 숫자를 올린다
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 1;
     // DB 파일명
     private static final String DB_NAME = "Chart.db";
 
@@ -24,7 +24,7 @@ public class BarchartDB extends SQLiteOpenHelper {
         String sql = "create table chart(" +
                 " _id integer primary key autoincrement," +
                 "value integer," + // 점수
-                "date date)"; // 날짜
+                "date text)"; // 날짜
 
         // date date(10) ==> 원래는 2010-08-25 13:02:30 으로 나오게 되는데 date date(10)으로 설정했기 때문에
         // 2010-08-25만 저장이 된다.
