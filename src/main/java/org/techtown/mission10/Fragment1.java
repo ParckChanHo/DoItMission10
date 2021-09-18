@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -46,8 +48,6 @@ import java.util.TimeZone;
 
 public class Fragment1 extends Fragment {
 	// 메인 페이지이다.
-
-
 	TextView user_location,time,temperature,TextViewdescription,TextViewmaxTemp,text_mood;
 	ImageView weatherIcon,time1,time2,time3;
 	String area_one,area_two;
@@ -67,11 +67,12 @@ public class Fragment1 extends Fragment {
 	boolean t2_flag = false;
 	boolean t3_flag = false;
 
-	// 각각의 Fragment마다 Instance를 반환해 줄 메소드를 생성합니다.
-	public static Fragment1 newInstance() {
-		return new Fragment1();
-	}
-
+	Cursor cursor;
+	SQLiteDatabase db;
+	moodDB helper;
+	int[] images = new int[]{R.drawable.face1,R.drawable.face2,R.drawable.face3,R.drawable.face5,R.drawable.face6};
+	int morning,lunch,dinner;
+	//myImageView.setImageResource(myImageList[i]);
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment1, container, false);
@@ -93,13 +94,46 @@ public class Fragment1 extends Fragment {
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 		final String dateResult = dateFormat.format(date);
 
+		helper = new moodDB(getContext());
+		db = helper.getReadableDatabase();
+
+		cursor = db.rawQuery("select count(morning),count(lunch), count(dinner) from mood where date = date('now')",null); // null 값을 제외하고 count함
+		while(cursor.moveToNext()){
+			if(cursor.getInt(0) == 1) // 아침
+				t1_flag = true;
+			if(cursor.getInt(1) == 1) // 점심
+				t2_flag = true;
+			if(cursor.getInt(2) == 1) // 저녁
+				t3_flag = true;
+
+			System.out.println("morningCount: "+cursor.getInt(0)); // morning
+			System.out.println("lunchCount: "+cursor.getInt(1)); // lunch
+			System.out.println("dinnerCount: "+cursor.getInt(2)); // dinner
+		}
+
+		cursor = db.rawQuery("select morning,lunch,dinner from mood where date = date('now')",null);
+		while(cursor.moveToNext()){
+			if(t1_flag){ // 아침이 null이 아니다.
+				System.out.println("아침 값: "+cursor.getInt(0));
+				time1.setImageResource(images[cursor.getInt(0)]);
+			}
+			if(t2_flag){
+				System.out.println("점심 값: "+cursor.getInt(1));
+				time2.setImageResource(images[cursor.getInt(1)]);
+			}
+			if(t3_flag){
+				System.out.println("저녁 값: "+cursor.getInt(2));
+				time3.setImageResource(images[cursor.getInt(2)]);
+			}
+        }
+
+
 		text_mood.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// 검진결과 조회로 이동하기!!!
 			}
 		});
-
 
 		// 나의 기분 날씨
 		final String[] myMood = new String[]{"너무 좋아요^~^", "좋아요!", "괜찮아요~", "안좋아요ㅡ.ㅡ", "엄청 힘들어요ㅠ.ㅠ"};
@@ -133,7 +167,6 @@ public class Fragment1 extends Fragment {
 								t1 = 10;
 								sum+=t1;
 								time1.setImageResource(R.drawable.face1);
-								t1_flag = true;
 							}else if(myMood[which].equals("좋아요!")){
 								count++;
 								t1 = 8;
