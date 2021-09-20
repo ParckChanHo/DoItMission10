@@ -70,8 +70,12 @@ public class Fragment1 extends Fragment {
 	moodDB helper;
 	int[] images = new int[]{R.drawable.face1,R.drawable.face2,R.drawable.face3,R.drawable.face5,R.drawable.face6};
 	int[] moodScore = new int[]{10,8,6,4,2};
-	boolean newCreate;
+	//boolean newCreate;
 	ContentValues values;
+
+	SimpleDateFormat format1;
+	Date todayTime;
+	String today;
 	//myImageView.setImageResource(myImageList[i]);
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,30 +99,40 @@ public class Fragment1 extends Fragment {
 		final String dateResult = dateFormat.format(date);
 
 		helper = new moodDB(getContext());
+
+		format1 = new SimpleDateFormat ("yyyy-MM-dd");
+		todayTime = new Date();
+		today = format1.format(todayTime);
+
 		db = helper.getReadableDatabase();
-
-		// 초기값 설정하기!!
-		text_mood.setText("\n오늘은 기분이 매우 좋아보여요. 모든 일이 다 잘 될겁니다!!");
-
 		cursor = db.rawQuery("select count(morning),count(lunch), count(dinner) from mood where date = date('now')",null); // null 값을 제외하고 count함
 		while(cursor.moveToNext()){
-			if(cursor.getInt(0) == 1) // 아침
+			if(cursor.getInt(0) >= 1) // 아침
 				t1_flag = true;
-			if(cursor.getInt(1) == 1) // 점심
+			if(cursor.getInt(1) >= 1) // 점심
 				t2_flag = true;
-			if(cursor.getInt(2) == 1) // 저녁
+			if(cursor.getInt(2) >= 1) // 저녁
 				t3_flag = true;
 
 			System.out.println("morningCount: "+cursor.getInt(0)); // morning
 			System.out.println("lunchCount: "+cursor.getInt(1)); // lunch
 			System.out.println("dinnerCount: "+cursor.getInt(2)); // dinner
 		}
-		if(t1_flag == false && t2_flag == false && t3_flag == false)
-			newCreate = true; // 즉 완전히 아무것도 없는 경우(오늘 날짜에...)
-
+		if(t1_flag == false && t2_flag == false && t3_flag == false){
+			db = helper.getWritableDatabase();
+			values = new ContentValues();
+			values.put("date",today);
+			db.insert("mood",null,values);
+			// 초기값 설정하기!!
+			text_mood.setText("\n오늘은 기분이 매우 좋아보여요. 모든 일이 다 잘 될겁니다!!");
+		}
 
 		cursor = db.rawQuery("select morning,lunch,dinner from mood where date = date('now')",null);
 		while(cursor.moveToNext()){
+			System.out.println("1) 아침 값: "+cursor.getInt(0));
+			System.out.println("1) 점심 값: "+cursor.getInt(1));
+			System.out.println("1) 저녁 값: "+cursor.getInt(2));
+
 			if(t1_flag){ // 아침이 null이 아니다.
 				System.out.println("아침 값: "+cursor.getInt(0));
 				time1.setImageResource(images[cursor.getInt(0)]);
@@ -140,6 +154,8 @@ public class Fragment1 extends Fragment {
         }
         System.out.println("sum: "+sum);
         System.out.println("count: "+count);
+        if(sum!=0 && count!=0)
+			cf();
 
 		text_mood.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -151,31 +167,20 @@ public class Fragment1 extends Fragment {
 		// 나의 기분 날씨
 		final String[] myMood = new String[]{"너무 좋아요^~^", "좋아요!", "괜찮아요~", "안좋아요ㅡ.ㅡ", "엄청 힘들어요ㅠ.ㅠ"};
 		// 다이어로그 창 - 기분 고르는 곳(값은 2 4 6 8 10)
-		/*
-			기본 알림창 AltertDialog에 목록을 표현하고 싶다면 Builder 클래스에서 setItems() 함수를 사용해야한다.
-			그리고 목록에 들어갈 텍스트는 String 배열로 만든후 setItems() 첫 번째 인자로 전달한다.
-			AlertDialog 대화상자에서 어떤 것을 선택하였는지 아는 방법은 onClick() 함수의 2번째 인자로 넘어온 which 값으로
-			알 수가 있다. 이 때 which 값은 배열의 요소 값이다. 즉 이 값으로 몇 번째 데이터 인지 알 수가 있다.
-
-			1) 다이얼로그 생성하기
-			AlterDialog alertDialog = alertDialogBuilder.create();
-			2) 다이얼로그 보여주기
-			alertDialog.show();
-			3) 다이얼로그 끝내기
-			 dialog.dismiss();
-		*/
 
 		final AlertDialog.Builder dlg = new AlertDialog.Builder(getActivity());
 		dlg.setTitle("나의 기분을 선택하세요");
-		SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd");
-		Date todayTime = new Date();
-		final String today = format1.format(todayTime);
+		/*format1 = new SimpleDateFormat ( "yyyy-MM-dd");
+		todayTime = new Date();
+		today = format1.format(todayTime);*/
 
 		// int[] moodScore = new int[]{10,8,6,4,2};
 		/* INSERT INTOthen use WHERE절 을 사용할 수 없습니다 .
 		INSERT INTO는 이전에 존재하지 않았던 새로운 행을 테이블에 추가한다는 의미입니다.
 		UPDATE 및 SELECT 문에서는 WHERE를 사용할 수 있지만 INSERT INTO에서는 사용할 수 없습니다.
 		INSERT INTO 대신 UPDATE를 의미한다고 생각합니다.*/
+
+		values = new ContentValues(); // 이렇게 하니깐 count 및 sum 값이 정상적으로 동작을 함. 왜 그런지는 모르겠음!!!
 		time1.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -185,85 +190,44 @@ public class Fragment1 extends Fragment {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							if(myMood[which].equals("너무 좋아요^~^")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",0);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",0);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								values.put("morning",0);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[0];
 								time1.setImageResource(R.drawable.face1);
 								t1_flag = true;
 							}else if(myMood[which].equals("좋아요!")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",1);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",1);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("morning",1);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[1];
 								time1.setImageResource(R.drawable.face2);
 								t1_flag = true;
 							}else if(myMood[which].equals("괜찮아요~")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",2);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",2);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("morning",2);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[2];
 								time1.setImageResource(R.drawable.face3);
 								t1_flag = true;
 							}else if(myMood[which].equals("안좋아요ㅡ.ㅡ")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",3);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",3);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("morning",3);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[3];
 								time1.setImageResource(R.drawable.face5);
 								t1_flag = true;
 							}else if(myMood[which].equals("엄청 힘들어요ㅠ.ㅠ")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",4);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",4);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("morning",4);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[4];
@@ -287,85 +251,45 @@ public class Fragment1 extends Fragment {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							if(myMood[which].equals("너무 좋아요^~^")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",0);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",0);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("lunch",0);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[0];
 								time2.setImageResource(R.drawable.face1);
 								t2_flag = true;
 							}else if(myMood[which].equals("좋아요!")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",1);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",1);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("lunch",1);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[1];
 								time2.setImageResource(R.drawable.face2);
 								t2_flag = true;
 							}else if(myMood[which].equals("괜찮아요~")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",2);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",2);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("lunch",2);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[2];
 								time2.setImageResource(R.drawable.face3);
 								t2_flag = true;
 							}else if(myMood[which].equals("안좋아요ㅡ.ㅡ")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",3);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",3);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("lunch",3);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[3];
 								time2.setImageResource(R.drawable.face5);
 								t2_flag = true;
 							}else if(myMood[which].equals("엄청 힘들어요ㅠ.ㅠ")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",4);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",4);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("lunch",4);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[4];
@@ -389,85 +313,45 @@ public class Fragment1 extends Fragment {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							if(myMood[which].equals("너무 좋아요^~^")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",0);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",0);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("dinner",0);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[0];
 								time3.setImageResource(R.drawable.face1);
 								t3_flag = true;
 							}else if(myMood[which].equals("좋아요!")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",1);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",1);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("dinner",1);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[1];
 								time3.setImageResource(R.drawable.face2);
 								t3_flag = true;
 							}else if(myMood[which].equals("괜찮아요~")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",2);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",2);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("dinner",2);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[2];
 								time3.setImageResource(R.drawable.face3);
 								t3_flag = true;
 							}else if(myMood[which].equals("안좋아요ㅡ.ㅡ")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",3);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",3);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("dinner",3);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[3];
 								time3.setImageResource(R.drawable.face5);
 								t3_flag = true;
 							}else if(myMood[which].equals("엄청 힘들어요ㅠ.ㅠ")){
-								if(newCreate){ // 완전히 새롭게 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",4);
-									values.put("date",today);
-									db.insert("mood",null,values);
-								}
-								else{ // 아침, 점심, 저녁 중 1나만 insert 하는 경우...
-									values = new ContentValues();
-									values.put("morning",4);
-									db.update("mood",values,"date = ?",new String[]{ today });
-								}
+								//values = new ContentValues();
+								values.put("dinner",4);
+								db.update("mood",values,"date = ?",new String[]{ today });
 
 								count++;
 								sum+=moodScore[4];
@@ -630,6 +514,7 @@ public class Fragment1 extends Fragment {
 
 	public void cf(){
 		int average = sum/count;
+		text_mood.setText("");
 
 		if (2<= average && average <4) // 2<=average<4
 			text_mood.append("오늘 엄청 힘들어 하시네요.ㅠㅠ 그래도 화이팅!!");
