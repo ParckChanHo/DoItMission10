@@ -105,7 +105,7 @@ public class Fragment1 extends Fragment {
 		today = format1.format(todayTime);
 
 		db = helper.getReadableDatabase();
-		cursor = db.rawQuery("select count(morning),count(lunch), count(dinner) from mood where date = date('now')",null); // null 값을 제외하고 count함
+		cursor = db.rawQuery("select count(morning),count(lunch), count(dinner) from mood where date = date('now') order by _id desc limit 1",null); // null 값을 제외하고 count함
 		while(cursor.moveToNext()){
 			if(cursor.getInt(0) >= 1) // 아침
 				t1_flag = true;
@@ -127,7 +127,7 @@ public class Fragment1 extends Fragment {
 			text_mood.setText("\n오늘은 기분이 매우 좋아보여요. 모든 일이 다 잘 될겁니다!!");
 		}
 
-		cursor = db.rawQuery("select morning,lunch,dinner from mood where date = date('now')",null);
+		cursor = db.rawQuery("select morning,lunch,dinner from mood where date = date('now') order by _id desc limit 1",null);
 		while(cursor.moveToNext()){
 			System.out.println("1) 아침 값: "+cursor.getInt(0));
 			System.out.println("1) 점심 값: "+cursor.getInt(1));
