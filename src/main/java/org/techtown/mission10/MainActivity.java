@@ -154,6 +154,8 @@ public class MainActivity extends AppCompatActivity
                         // fragment4 ==> 게시판
                         Toast.makeText(getApplicationContext(), "세 번째 탭 선택됨", Toast.LENGTH_LONG).show();
 
+                        /*Intent intent = new Intent(getApplicationContext(),boardActivity.class);
+                        startActivity(intent);*/
                         fragment4 = new Fragment4();
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.container, fragment4).addToBackStack(null).commit();
@@ -239,5 +241,12 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment2).addToBackStack(null).commit();
     }
+
+    public void callFragment4(){
+        Fragment4 fragment4 = new Fragment4();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment4).addToBackStack(null).commit();
+    }
+
 
 }

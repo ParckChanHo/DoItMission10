@@ -4,9 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginTop="60dp">
 
-    <LinearLayout
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/board_recyclerView">
+
+    </androidx.recyclerview.widget.RecyclerView>
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -26,28 +34,15 @@
             android:layout_marginLeft="15dp"
             android:background="#E8FFE8"/>
 
-       <!-- <SearchView
+       &lt;!&ndash; <SearchView
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:queryHint="검색"/>-->
+            android:queryHint="검색"/>&ndash;&gt;
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/board_recyclerView">
-
-        </androidx.recyclerview.widget.RecyclerView>
-    </LinearLayout>
-
+-->
 
 
 

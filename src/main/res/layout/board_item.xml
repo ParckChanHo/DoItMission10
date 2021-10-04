@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F44336"
+    android:layout_margin="10sp">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="여기는 제목을 출력합니다"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:padding="10sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:maxLines="1"/>
+
+    <TextView
+        android:id="@+id/nickName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_marginLeft="80dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:padding="10sp"
+        android:singleLine="true"
+        android:text="닉네임: nickName5"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_alignParentRight="true"
+        android:padding="10sp"
+        android:text="날짜: 2021-07-01"
+        android:textColor="#FFEB3B"
+        android:textSize="15sp" />
+    <ImageView
+        android:id="@+id/btndel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_delete_black_24dp"
+        android:layout_alignParentRight="true"
+        />
+
+</RelativeLayout>
