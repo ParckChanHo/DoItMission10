@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 public class Fragment4 extends Fragment {
     RecyclerView recyclerView;
-    public static ArrayList<board> boardList = new ArrayList<>();;
     boardAdapter boardAdapter;
 
     static RequestQueue requestQueue;
@@ -49,10 +48,6 @@ public class Fragment4 extends Fragment {
         }
 
         callVolley("http://101.101.209.108:8080/AndroidTest/Allboard.jsp");
-        boardAdapter = new boardAdapter(boardList,c);
-        boardAdapter.notifyDataSetChanged();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(boardAdapter);
 
         return v;
 
@@ -66,6 +61,7 @@ public class Fragment4 extends Fragment {
                     public void onResponse(String response) {
 
                         try{
+                            ArrayList<board> boardList = new ArrayList<>();
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray jsonArray = jsonObject.getJSONArray("Allboard"); // Allboard Array
                             for(int i=0; i<jsonArray.length(); i++){
@@ -83,6 +79,10 @@ public class Fragment4 extends Fragment {
                                         "boardContent: "+boardContent+"boardAvailable: "+boardAvailable+"\n");
                                 //textView.append(i+"번째 "+"제목: "+boardTitle+" 닉네임: "+boardNickname+" 날짜: "+boardDate+" 내용: "+boardContent + "\n");
                             }
+
+                            boardAdapter = new boardAdapter(boardList,c);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                            recyclerView.setAdapter(boardAdapter);
                         }
                         catch (JSONException e) {
                             e.printStackTrace();
