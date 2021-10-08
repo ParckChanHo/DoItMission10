@@ -1,11 +1,13 @@
 package org.techtown.mission10;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +33,8 @@ public class Fragment4 extends Fragment {
 
     static RequestQueue requestQueue;
     public static Context c; // context 변수 선언
+    FloatingActionButton Insert_btn;
+    // boardInsertActivity
 
     // 게시판
     public Fragment4() {
@@ -46,6 +51,31 @@ public class Fragment4 extends Fragment {
         if(requestQueue == null){
             requestQueue = Volley.newRequestQueue(c);
         }
+
+        Insert_btn = v.findViewById(R.id.Insert_btn);
+        Insert_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(c, boardInsertActivity.class);
+                c.startActivity(intent);
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (dy > 0) {
+                    // 아래로 스크롤
+                    Insert_btn.hide();
+                } else if (dy < 0) {
+                    // 위로 스크롤
+                    Insert_btn.show();
+                }
+            }
+        });
+
 
         callVolley("http://101.101.209.108:8080/AndroidTest/Allboard.jsp");
 

@@ -16,6 +16,13 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".boardInsertActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".boardUpdateActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

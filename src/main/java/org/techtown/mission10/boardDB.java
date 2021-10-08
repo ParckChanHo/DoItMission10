@@ -134,7 +134,7 @@ public class boardDB {
                 new Response.Listener<String>() { //3번째 매개변수
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(c,response,Toast.LENGTH_LONG).show();
+                        Toast.makeText(c,response.trim(),Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() { //4번째 매개변수
@@ -170,7 +170,7 @@ public class boardDB {
                 new Response.Listener<String>() { //3번째 매개변수
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(c,response,Toast.LENGTH_LONG).show();
+                        Toast.makeText(c,response.trim(),Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() { //4번째 매개변수
@@ -186,6 +186,41 @@ public class boardDB {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("boardId",boardId+"");
+
+                return params;
+            }
+        }; //end new StringRequest
+        // Add the request to the RequestQueue.
+
+        stringRequest.setShouldCache(false);
+        requestQueue.add(stringRequest);
+    }
+
+    public void insertBoard(final String title, final String content){
+        String url = "http://101.101.209.108:8080/AndroidTest/InsertBoard.jsp";
+
+        //Toast.makeText(c,url,Toast.LENGTH_SHORT).show();
+        final StringRequest stringRequest = new StringRequest(Request.Method.POST, url, //GET 방식이다.
+                new Response.Listener<String>() { //3번째 매개변수
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(c,response.trim(),Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() { //4번째 매개변수
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.getMessage();
+                    }
+                }
+        )
+
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("boardTitle",title);
+                params.put("boardContent",content);
 
                 return params;
             }

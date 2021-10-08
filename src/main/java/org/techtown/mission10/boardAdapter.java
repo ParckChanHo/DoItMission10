@@ -1,6 +1,8 @@
 package org.techtown.mission10;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ public class boardAdapter extends RecyclerView.Adapter<boardAdapter.boardViewHol
     ArrayList<board> boardList;
     Context c; // Fragment4의 Context를 받아오기 위해서이다.
     int position;
+    MainActivity mainActivity;
 
     public boardAdapter(ArrayList<board> boardList,Context c){
         this.boardList = boardList;
@@ -64,6 +67,7 @@ public class boardAdapter extends RecyclerView.Adapter<boardAdapter.boardViewHol
         public TextView nickName;
         public TextView date;
         public ImageView delete_img;
+        public ImageView btnUpdate;
 
         public boardViewHoler(@NonNull View itemView) {
             super(itemView);
@@ -72,11 +76,27 @@ public class boardAdapter extends RecyclerView.Adapter<boardAdapter.boardViewHol
             nickName = itemView.findViewById(R.id.nickName);
             date = itemView.findViewById(R.id.date);
             delete_img = itemView.findViewById(R.id.btndel);
+            btnUpdate = itemView.findViewById(R.id.btnUpdate);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // 전체 내용 보여주기 + 수정하기
+                    position = getAdapterPosition(); // list의 몇 번째 아이템인지를 알게 해준다.
+
+                    Intent intent = new Intent(c, boardActivity.class);
+                    intent.putExtra("boardId", boardList.get(position).getBoardId());
+                    intent.putExtra("boardNickname", boardList.get(position).getBoardNickname());
+                    intent.putExtra("boardDate", boardList.get(position).getBoardDate());
+                    intent.putExtra("boardContent", boardList.get(position).getBoardContent());
+                    intent.putExtra("boardTitle", boardList.get(position).getBoardTitle());
+                    c.startActivity(intent);
+                }
+            });
+
+            btnUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     position = getAdapterPosition(); // list의 몇 번째 아이템인지를 알게 해준다.
 
                     Intent intent = new Intent(c, boardUpdateActivity.class);
@@ -88,15 +108,24 @@ public class boardAdapter extends RecyclerView.Adapter<boardAdapter.boardViewHol
                     c.startActivity(intent);
                 }
             });
-
             delete_img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    position = getAdapterPosition(); // list의 몇 번째 아이템인지를 알게 해준다.
-                    int boardId = boardList.get(position).getBoardId();
+                    AlertDialog.Builder box=new AlertDialog.Builder(c);
+                    box.setMessage("삭제하시겠습니까?");
+                    box.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            position = getAdapterPosition(); // list의 몇 번째 아이템인지를 알게 해준다.
+                            int boardId = boardList.get(position).getBoardId();
+                            mainActivity = new MainActivity();
 
-                    boardDB helper = new boardDB(c);
-                    helper.deleteBoard(boardId);
+                            boardDB helper = new boardDB(c);
+                            helper.deleteBoard(boardId);
+                        }
+                    });
+                    box.setNegativeButton("닫기",null);
+                    box.show();
                 }
             });
         } // end boardViewHolder 클래스

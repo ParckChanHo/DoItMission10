@@ -178,6 +178,9 @@ public class MainActivity extends AppCompatActivity
         } else if (position == 2) {
             curFragment = new Fragment3();
         }
+        else if(position == 3){
+            curFragment = new Fragment4();
+        }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, curFragment).addToBackStack(null).commit();
     }
@@ -243,9 +246,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void callFragment4(){
-        Fragment4 fragment4 = new Fragment4();
+        onFragmentSelected(3, null);
+
+        /*fragment4 = new Fragment4();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, fragment4).addToBackStack(null).commit();
+                .replace(R.id.container, fragment4).addToBackStack(null).commit();*/
     }
 
 

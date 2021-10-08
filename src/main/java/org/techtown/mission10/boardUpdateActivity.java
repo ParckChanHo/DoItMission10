@@ -3,6 +3,7 @@ package org.techtown.mission10;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ public class boardUpdateActivity extends AppCompatActivity {
     FloatingActionButton update_btn;
     board board;
     static RequestQueue requestQueue;
+
+    Fragment4 fragment4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +39,8 @@ public class boardUpdateActivity extends AppCompatActivity {
         update_btn = findViewById(R.id.update_btn);
         board = new board();
         requestQueue = Volley.newRequestQueue(getApplicationContext());
+        fragment4 = new Fragment4();
+
 
         Intent intent=getIntent();
         boardId = intent.getIntExtra("boardId",-1);
@@ -51,9 +56,6 @@ public class boardUpdateActivity extends AppCompatActivity {
         System.out.println("boardTitle: "+boardTitle);
 
         final boardDB helper = new boardDB(getApplicationContext());
-        /*board = helper.getOneBoard(boardId);*/
-
-        //Toast.makeText(getApplicationContext(),boardId+boardTitle,Toast.LENGTH_LONG).show();
 
         nickName.setText("닉네임: "+boardNickname); //board.getBoardNickname()
         date.setText("날짜: "+boardDate); // +board.getBoardDate()
@@ -71,9 +73,7 @@ public class boardUpdateActivity extends AppCompatActivity {
                         String updateTitle = title.getText().toString();
                         String updateContent = content.getText().toString();
                         helper.updateBoard(boardId,updateContent,updateTitle);
-
-
-                        //Toast.makeText(UpdateActivity.this, "수정되었습니다.", Toast.LENGTH_SHORT).show();
+                        //fragment4.callVolley("http://101.101.209.108:8080/AndroidTest/Allboard.jsp");;
                     }
                 });
                 box.setNegativeButton("닫기",null);
