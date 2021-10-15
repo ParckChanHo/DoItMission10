@@ -14,7 +14,8 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:id="@+id/board_textView"/>
+        android:id="@+id/board_textView"
+        />
 
     <EditText
         android:id="@+id/title_edit"
@@ -22,7 +23,7 @@
         android:layout_height="wrap_content"
         android:hint="제목: Sample1"
         android:layout_below="@id/board_textView"
-        />
+        android:focusableInTouchMode="false"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,10 +53,44 @@
     <EditText
         android:id="@+id/contents_edit"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="330dp"
+        android:layout_below="@id/update_linearLayout"
         android:background="#cfcfcf"
         android:hint="내용"
-        android:layout_below="@id/update_linearLayout"/>
+        android:focusableInTouchMode="false"
+        android:layout_marginBottom="10dp"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="댓글내용"
+        android:gravity="center"
+        android:id="@+id/child_textView"
+        android:layout_below="@+id/contents_edit"
+        android:layout_marginBottom="10dp"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/child_textView"
+       android:layout_above="@+id/childInsert"
+        android:id="@+id/Childboard_recyclerView"/>
+
+    <EditText
+        android:id="@+id/childInsert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp" />
+
+    <Button
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_alignRight="@+id/childInsert"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="11dp"
+        android:background="@color/custom_6"
+        android:id="@+id/child_button"
+        android:text="전송" />
 </RelativeLayout>
