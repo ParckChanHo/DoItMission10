@@ -1,17 +1,18 @@
 package org.techtown.mission10;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -19,118 +20,209 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
 public class Fragment4 extends Fragment {
     RecyclerView recyclerView;
-    boardAdapter boardAdapter;
+    RequestQueue requestQueue;
+    Button board_write;
+    SwipeRefreshLayout swipe;
 
-    static RequestQueue requestQueue;
-    public static Context c; // context 변수 선언
-    FloatingActionButton Insert_btn;
-    // boardInsertActivity
-
-    // 게시판
     public Fragment4() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        ViewGroup v = (ViewGroup)inflater.inflate(R.layout.fragment4, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        final View v = inflater.inflate(R.layout.fragment4, container, false);
 
-        recyclerView = (RecyclerView)v.findViewById(R.id.board_recyclerView);
-        c = getContext(); // onCreate에서 this 할당
-        //textView = (TextView)findViewById(R.id.TextView);
-        if(requestQueue == null){
-            requestQueue = Volley.newRequestQueue(c);
-        }
-
-        Insert_btn = v.findViewById(R.id.Insert_btn);
-        Insert_btn.setOnClickListener(new View.OnClickListener() {
+        //글 쓰기 화면이동
+        board_write=(Button) v.findViewById(R.id.write);
+        board_write.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(c, boardInsertActivity.class);
-                c.startActivity(intent);
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), board_write.class);
+                startActivity(intent);
             }
         });
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+        swipe = (SwipeRefreshLayout) v.findViewById(R.id.swipe);
 
-                if (dy > 0) {
-                    // 아래로 스크롤
-                    Insert_btn.hide();
-                } else if (dy < 0) {
-                    // 위로 스크롤
-                    Insert_btn.show();
-                }
+        requestQueue = Volley.newRequestQueue(getActivity());
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //게시글 보여주기
+                String url = "http://115.85.181.116:8080/android/webapp/board.jsp";
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    String xml = response.trim();
+
+                                    //try안에 view와 list 생성 후 사용
+                                    recyclerView = (RecyclerView)v.findViewById(R.id.RecyclerView);
+                                    ArrayList<Table> list = new ArrayList<>();
+
+                                    XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                                    factory.setNamespaceAware(true);
+                                    XmlPullParser parser = factory.newPullParser();
+                                    parser.setInput(new StringReader(xml));
+
+                                    //Toast.makeText(getActivity(), xml, Toast.LENGTH_SHORT).show();
+
+                                    String title="", content="", author="", boardnum=""; //제목, 내용, 작성자, 게시글번호
+                                    int count = 0;
+                                    int evenType = parser.getEventType();
+                                    boolean a = false, b = false, c = false, d = false;
+                                    while (evenType != XmlPullParser.END_DOCUMENT){
+                                        if (evenType == XmlPullParser.START_TAG){
+                                            if (parser.getName().equals("title")) a = true;
+                                            if (parser.getName().equals("content")) b = true;
+                                            if (parser.getName().equals("author")) c = true;
+                                            if (parser.getName().equals("boardnum")) d = true;
+                                        }else if(evenType == XmlPullParser.TEXT){
+                                            if (a){
+                                                title = parser.getText();
+                                                count++;
+                                                a = false;
+                                            }
+                                            if (b){
+                                                content = parser.getText();
+                                                count++;
+                                                b = false;
+                                            }
+                                            if (c){
+                                                author = parser.getText();
+                                                count++;
+                                                c = false;
+                                            }
+                                            if (d){
+                                                boardnum = parser.getText();
+                                                count++;
+                                                d = false;
+                                            }
+                                        }
+                                        if (count == 4){
+                                            list.add(new Table(title, content, author, boardnum));
+                                            count = 0;
+                                        }
+                                        evenType = parser.next();
+                                    }
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                    recyclerView.setAdapter(new TableAdapter(list, getContext()));
+                                } catch (XmlPullParserException | IOException e) {
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+                        }
+                );
+                requestQueue.add(stringRequest);
+
+                swipe.setRefreshing(false);
             }
         });
 
-
-        callVolley("http://101.101.209.108:8080/AndroidTest/Allboard.jsp");
-
-        return v;
-
-    }
-
-    public void callVolley(String url){
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, //GET 방식이다.
-                new Response.Listener<String>() { //3번째 매개변수
-
+        //게시글 보여주기
+        String url = "http://115.85.181.116:8080/android/webapp/board.jsp";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        try {
+                            String xml = response.trim();
 
-                        try{
-                            ArrayList<board> boardList = new ArrayList<>();
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONArray jsonArray = jsonObject.getJSONArray("Allboard"); // Allboard Array
-                            for(int i=0; i<jsonArray.length(); i++){
-                                JSONObject Object = jsonArray.getJSONObject(i);
+                            //try안에 view와 list 생성 후 사용
+                            recyclerView = (RecyclerView)v.findViewById(R.id.RecyclerView);
+                            ArrayList<Table> list = new ArrayList<>();
 
-                                int boardId = Object.getInt("boardId");
-                                String boardTitle = Object.getString("boardTitle");
-                                String boardNickname = Object.getString("boardNickname");
-                                String boardDate = Object.getString("boardDate");
-                                String boardContent = Object.getString("boardContent");
-                                int boardAvailable = Object.getInt("boardAvailable");
+                            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                            factory.setNamespaceAware(true);
+                            XmlPullParser parser = factory.newPullParser();
+                            parser.setInput(new StringReader(xml));
 
-                                boardList.add(new board(boardId,boardTitle,boardNickname,boardDate,boardContent,boardAvailable));
-                                System.out.println("boardId: "+boardId+"boardTitle: "+boardTitle+"boardNickname: "+boardNickname+"boardDate: "+boardDate+
-                                        "boardContent: "+boardContent+"boardAvailable: "+boardAvailable+"\n");
-                                //textView.append(i+"번째 "+"제목: "+boardTitle+" 닉네임: "+boardNickname+" 날짜: "+boardDate+" 내용: "+boardContent + "\n");
+                            //Toast.makeText(getActivity(), xml, Toast.LENGTH_SHORT).show();
+
+                            String title="", content="", author="", boardnum=""; //제목, 내용, 작성자, 게시글번호
+                            int count = 0;
+                            int evenType = parser.getEventType();
+                            boolean a = false, b = false, c = false, d = false;
+                            while (evenType != XmlPullParser.END_DOCUMENT){
+                                if (evenType == XmlPullParser.START_TAG){
+                                    if (parser.getName().equals("title")) a = true;
+                                    if (parser.getName().equals("content")) b = true;
+                                    if (parser.getName().equals("author")) c = true;
+                                    if (parser.getName().equals("boardnum")) d = true;
+                                }else if(evenType == XmlPullParser.TEXT){
+                                    if (a){
+                                        title = parser.getText();
+                                        count++;
+                                        a = false;
+                                    }
+                                    if (b){
+                                        content = parser.getText();
+                                        count++;
+                                        b = false;
+                                    }
+                                    if (c){
+                                        author = parser.getText();
+                                        count++;
+                                        c = false;
+                                    }
+                                    if (d){
+                                        boardnum = parser.getText();
+                                        count++;
+                                        d = false;
+                                    }
+                                }
+                                if (count == 4){
+                                    list.add(new Table(title, content, author, boardnum));
+                                    count = 0;
+                                }
+                                evenType = parser.next();
                             }
-
-                            boardAdapter = new boardAdapter(boardList,c);
                             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                            recyclerView.setAdapter(boardAdapter);
-                        }
-                        catch (JSONException e) {
-                            e.printStackTrace();
+                            recyclerView.setAdapter(new TableAdapter(list, getContext()));
+                        } catch (XmlPullParserException | IOException e) {
                         }
                     }
                 },
-                new Response.ErrorListener() { //4번째 매개변수
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error.getMessage();
+
                     }
                 }
-        ) {
-        }; //end new StringRequest
-        // Add the request to the RequestQueue.
+        );
 
-        stringRequest.setShouldCache(false);
         requestQueue.add(stringRequest);
-    } // end callVolley()
+
+        return v;
+    }
 
 }
+
+
