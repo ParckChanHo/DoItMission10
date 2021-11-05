@@ -58,7 +58,7 @@ public class board_notice extends AppCompatActivity {
         //fragment3에서 전달해준 게시글번호 받기
         Intent intent = new Intent(this.getIntent());
         boardnum = intent.getStringExtra("boardnum");
-        Toast.makeText(getApplicationContext(), boardnum, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), boardnum, Toast.LENGTH_SHORT).show();
 
         //게시글 제목, 내용, 작성자 가져오기
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
