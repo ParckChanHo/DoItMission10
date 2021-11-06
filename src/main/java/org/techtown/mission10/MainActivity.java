@@ -223,7 +223,8 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         } else if (id == R.id.nav_2) {
             // 상담센터 안내
-            onFragmentSelected(2, null);
+            Intent intent = new Intent(getApplicationContext(),CallcenterActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
