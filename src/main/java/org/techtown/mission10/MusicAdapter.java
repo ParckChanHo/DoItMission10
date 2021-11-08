@@ -72,20 +72,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         this.listenerthree = listenerthree;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @NonNull
     @Override
     public MusicViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
