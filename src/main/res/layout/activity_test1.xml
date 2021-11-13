@@ -52,9 +52,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:progressTint="#F57C00"
                 android:max="100"
-                android:progress="0"/>
+                android:progress="0"
+                android:progressTint="#F57C00" />
 
             <ImageView
                 android:id="@+id/imageView10"
@@ -94,39 +94,40 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="매우 그렇다" />
+                    android:text="전혀 슬프지 않아요" />
 
                 <RadioButton
                     android:id="@+id/radio_btn2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="그렇다" />
+                    android:text="슬픈 편이에요" />
 
                 <RadioButton
                     android:id="@+id/radio_btn3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="아니다" />
+                    android:text="항상 슬프고 기운이 안 나요" />
 
                 <RadioButton
                     android:id="@+id/radio_btn4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="전혀 아니다" />
+                    android:text="너무 슬프고 불행해서 견딜 수 없어요" />
 
             </RadioGroup>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
-            android:orientation="horizontal"
             android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
@@ -151,6 +152,18 @@
                 android:textColor="#000000" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/test1_resourcef"
+            android:layout_width="390dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginBottom="20dp"
+            android:text="출처: https://trost.co.kr/promotion/channel/depressive-check-program/"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

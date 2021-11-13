@@ -73,8 +73,8 @@ public class TestGraph extends AppCompatActivity {
         setContentView(R.layout.activity_test_graph);
 
         chart = findViewById(R.id.barchart);
-        chart.getAxisRight().setAxisMaxValue(60);
-        chart.getAxisLeft().setAxisMaxValue(60);
+        chart.getAxisRight().setAxisMaxValue(100); //60
+        chart.getAxisLeft().setAxisMaxValue(100); //60
         NoOfEmp = new ArrayList<>();//y축
         helper = new BarchartDB(this);
         db = helper.getReadableDatabase();
