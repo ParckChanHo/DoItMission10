@@ -50,7 +50,7 @@ public class TestResult extends AppCompatActivity {
         tx_sum.setText(sum+" 점");
 
         // 0~9 까지는 Xml에 기록이 되어있다.!!!
-        if (sum>9 && sum<=15){
+        if (sum>=10 && sum<=15){
             tx_t1.setText("10~15점 : 가벼운 우울 상태");
             tx_t2.setText("나도 모르게 요즘 좀 우울...");
         }else if(sum>=16 && sum<=23){

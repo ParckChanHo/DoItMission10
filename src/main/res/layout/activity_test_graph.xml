@@ -70,15 +70,6 @@
                     android:text="진단 그래프"
                     android:textSize="18dp" />
 
-                <Button
-                    android:id="@+id/btn_test_feeling"
-                    android:layout_width="130dp"
-                    android:layout_height="60dp"
-                    android:layout_marginLeft="30dp"
-                    android:background="@drawable/button_radius"
-                    android:text="기분 그래프"
-                    android:textSize="18dp" />
-
             </LinearLayout>
 
             <LinearLayout

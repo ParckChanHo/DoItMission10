@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity
                 switch (item.getItemId()) {
                     case R.id.tab1:
                         // fragment2 ==> 추천 채널이다.(1번째 탭)
-                        Toast.makeText(getApplicationContext(), "첫 번째 탭 선택됨", Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getApplicationContext(), "첫 번째 탭 선택됨", Toast.LENGTH_LONG).show();
 
                         fragment2 = new Fragment2();
                         getSupportFragmentManager().beginTransaction()
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity
                         return true;
                     case R.id.tab2:
                         // fragment3 ==> 자기 분석 테스트(2번째 탭)
-                        Toast.makeText(getApplicationContext(), "두 번째 탭 선택됨", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "두 번째 탭 선택됨", Toast.LENGTH_LONG).show();
 
                         fragment3 = new Fragment3();
                         getSupportFragmentManager().beginTransaction()
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity
                         return true;
                     case R.id.tab3:
                         // fragment4 ==> 게시판
-                        Toast.makeText(getApplicationContext(), "세 번째 탭 선택됨", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "세 번째 탭 선택됨", Toast.LENGTH_LONG).show();
 
                         /*Intent intent = new Intent(getApplicationContext(),boardActivity.class);
                         startActivity(intent);*/

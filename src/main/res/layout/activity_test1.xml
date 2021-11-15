@@ -161,7 +161,7 @@
             android:layout_marginLeft="25dp"
             android:layout_marginBottom="20dp"
             android:text="출처: https://trost.co.kr/promotion/channel/depressive-check-program/"
-            android:textSize="18sp"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

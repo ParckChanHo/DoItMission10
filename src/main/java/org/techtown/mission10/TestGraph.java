@@ -44,7 +44,7 @@ import java.util.TimeZone;
 public class TestGraph extends AppCompatActivity {
     //진단 그래프 화면이다.
     ImageView img_home;
-    Button test_graph,test_feeling; // 진단 그래프, 기분 그래프
+    Button test_graph; // 진단 그래프, 기분 그래프
 
     //https://javapapers.com/android/android-chart-example-app-using-mpandroidchart/
     // mp android barChartExample 이다.
@@ -73,8 +73,8 @@ public class TestGraph extends AppCompatActivity {
         setContentView(R.layout.activity_test_graph);
 
         chart = findViewById(R.id.barchart);
-        chart.getAxisRight().setAxisMaxValue(100); //60
-        chart.getAxisLeft().setAxisMaxValue(100); //60
+        chart.getAxisRight().setAxisMaxValue(65); //60
+        chart.getAxisLeft().setAxisMaxValue(65); //60
         NoOfEmp = new ArrayList<>();//y축
         helper = new BarchartDB(this);
         db = helper.getReadableDatabase();
@@ -158,7 +158,7 @@ public class TestGraph extends AppCompatActivity {
         chart.invalidate();
 
         test_graph = (Button)findViewById(R.id.btn_test_graph); // 진단 그래프
-        test_feeling = (Button)findViewById(R.id.btn_test_feeling); // 기분 그래프
+       // test_feeling = (Button)findViewById(R.id.btn_test_feeling); // 기분 그래프
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:text="당신은 엄청 건강한 사람입니다."
+                android:text="우울한 게 뭐죠?! 당신은 엄청 건강한 사람입니다."
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

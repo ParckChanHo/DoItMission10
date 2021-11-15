@@ -1,8 +1,13 @@
 package org.techtown.mission10;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,6 +51,7 @@ public class Fragment4 extends Fragment {
         // Required empty public constructor
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,6 +67,7 @@ public class Fragment4 extends Fragment {
                 startActivity(intent);
             }
         });
+
 
         swipe = (SwipeRefreshLayout) v.findViewById(R.id.swipe);
 
