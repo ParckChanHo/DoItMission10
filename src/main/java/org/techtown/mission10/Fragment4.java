@@ -77,7 +77,7 @@ public class Fragment4 extends Fragment {
             @Override
             public void onRefresh() {
                 //게시글 보여주기
-                String url = "http://115.85.181.116:8080/android/webapp/board.jsp";
+                String url = "http://118.67.131.202:8080/androidproject/board.jsp";
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         new Response.Listener<String>() {
                             @Override
@@ -154,7 +154,7 @@ public class Fragment4 extends Fragment {
         });
 
         //게시글 보여주기
-        String url = "http://115.85.181.116:8080/android/webapp/board.jsp";
+        String url = "http://118.67.131.202:8080/androidproject/board.jsp";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override

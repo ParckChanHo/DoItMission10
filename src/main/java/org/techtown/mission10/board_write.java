@@ -54,7 +54,7 @@ public class board_write extends AppCompatActivity {
                     author = "익명";
 
                 RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                String url = "http://115.85.181.116:8080/android/webapp/write.jsp?title="+title+"&author="+author+"&content="+content;
+                String url = "http://118.67.131.202:8080/androidproject/write.jsp?title="+title+"&author="+author+"&content="+content;
 
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         new Response.Listener<String>() {

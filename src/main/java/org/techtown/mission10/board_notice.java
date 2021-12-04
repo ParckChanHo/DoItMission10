@@ -62,7 +62,7 @@ public class board_notice extends AppCompatActivity {
 
         //게시글 제목, 내용, 작성자 가져오기
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        String url = "http://115.85.181.116:8080/android/webapp/notice.jsp?boardnum="+boardnum;
+        String url = "http://118.67.131.202:8080/androidproject/notice.jsp?boardnum="+boardnum;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -123,7 +123,7 @@ public class board_notice extends AppCompatActivity {
         re_size = (TextView) findViewById(R.id.reply_size);
         //댓글 가져오기
         RequestQueue requestQueue2 = Volley.newRequestQueue(getApplicationContext());
-        String url2 = "http://115.85.181.116:8080/android/webapp/reply.jsp?boardnum="+boardnum;
+        String url2 = "http://118.67.131.202:8080/androidproject/reply.jsp?boardnum="+boardnum;
         StringRequest stringRequest2 = new StringRequest(Request.Method.GET, url2,
                 new Response.Listener<String>() {
                     @Override
@@ -195,7 +195,7 @@ public class board_notice extends AppCompatActivity {
                     re_author = "익명";
 
                 RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                String url = "http://115.85.181.116:8080/android/webapp/reply_write.jsp?boardnum="+boardnum+"&author="+re_author+"&content="+re_content;
+                String url = "http://118.67.131.202:8080/androidproject/reply_write.jsp?boardnum="+boardnum+"&author="+re_author+"&content="+re_content;
 
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         new Response.Listener<String>() {
